@@ -1,6 +1,7 @@
 version: 1.0.{build}
-icon: assets/favicon.png
-image: Ubuntu1804
+
+install:
+    - pip install -r requirements.txt
 
 build_script:
-    - flet pack FetchFlow/main.py --name FetchFlow --icon assets/favicon.png --product-name FetchFlow --copyright "Copyright (c) 2022 CrazyFlyKite"
+    - flet pack FetchFlow/main.py --name FetchFlow --icon assets/favicon.png --product-name FetchFlow --product-version "{version}" --copyright "Copyright (c) 2024 CrazyFlyKite"
