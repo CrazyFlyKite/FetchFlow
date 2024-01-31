@@ -1,0 +1,4 @@
+name: FetchFlow
+version: 1.0.{build}
+icon: assets/favicon.png
+image: Ubuntu1804
