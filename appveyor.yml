@@ -1,4 +1,6 @@
-name: FetchFlow
 version: 1.0.{build}
 icon: assets/favicon.png
 image: Ubuntu1804
+
+build_script:
+    - flet pack FetchFlow/main.py --name FetchFlow --icon assets/favicon.png --product-name FetchFlow --copyright "Copyright (c) 2022 CrazyFlyKite"
