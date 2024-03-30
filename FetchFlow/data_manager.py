@@ -1,8 +1,6 @@
 import json
 import logging
 
-
-from typing import Any
 from utilities import JSONDictionary, PossibleKeys, PathLikeString
 
 
@@ -10,18 +8,9 @@ class DataManager:
 	def __init__(self, data_file: PathLikeString = '../assets/data.json'):
 		self.__data_file = data_file
 
-	# Data File
 	@property
 	def data_file(self) -> PathLikeString:
 		return str(self.__data_file)
-
-	@data_file.setter
-	def data_file(self, value: Any) -> None:
-		self.__data_file = str(value)
-
-	@data_file.deleter
-	def data_file(self) -> None:
-		del self.__data_file
 
 	def __load(self) -> JSONDictionary:
 		try:

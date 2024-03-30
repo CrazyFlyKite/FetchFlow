@@ -7,11 +7,12 @@ __pycache__/
 
 # Genarated files or directories
 *.spec
+*.icns
 build/
 dist/
 
 # PyCharm IDE files
 .idea/
 
-# DS Store
+# MacOS be like
 .DS_Store

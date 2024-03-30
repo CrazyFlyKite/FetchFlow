@@ -1,3 +1,5 @@
+import logging
+
 from flet import Page, ControlEvent, MainAxisAlignment, CrossAxisAlignment, TextAlign, FontWeight, ScrollMode
 from flet import View, AppBar, Text, ElevatedButton, Dropdown, Column
 from flet_core.dropdown import Option
@@ -32,15 +34,18 @@ class PreferencesView:
 
 		self.load_preferences()
 
-	def load_preferences(self):
+	def load_preferences(self) -> None:
 		data_manager: DataManager = DataManager()
 
-		self.video_dropdown.value = '.' + data_manager.get_key('default-video-format')
-		self.audio_dropdown.value = '.' + data_manager.get_key('default-audio-format')
+		try:
+			self.video_dropdown.value = '.' + data_manager.get_key('default-video-format')
+			self.audio_dropdown.value = '.' + data_manager.get_key('default-audio-format')
+		except TypeError:
+			logging.critical(f'{data_manager.data_file} doesn\'t exist!')
 
 		self.page.update()
 
-	def save_preferences(self, event: ControlEvent):
+	def save_preferences(self, event: ControlEvent) -> None:
 		data_manager: DataManager = DataManager()
 
 		data_manager.set_key('default-video-format', self.video_dropdown.value[1:])

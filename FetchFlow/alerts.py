@@ -3,6 +3,8 @@ from typing import Optional
 
 from flet import Page, ControlEvent, MainAxisAlignment, AlertDialog, Text, TextButton
 
+from utilities import YOUTUBE_URL
+
 
 def open_youtube_alert(page: Page, /) -> None:
 	def close_dialog(event: ControlEvent) -> None:
@@ -10,7 +12,7 @@ def open_youtube_alert(page: Page, /) -> None:
 		page.update()
 
 	def open_youtube(event: ControlEvent) -> None:
-		webbrowser.open('https://www.youtube.com')
+		webbrowser.open(YOUTUBE_URL)
 		close_dialog(event)
 
 	alert: AlertDialog = AlertDialog(

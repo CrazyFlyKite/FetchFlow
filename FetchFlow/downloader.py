@@ -7,14 +7,12 @@ from pytube.exceptions import RegexMatchError, VideoUnavailable
 
 from alerts import info_alert
 from data_manager import DataManager
-from utilities import DownloadType, PathLikeString
+from utilities import DownloadType, PathLikeString, assert_never
 
 
 class Downloader:
 	def __init__(self, page: Page, /, url: str, filename: str, directory: PathLikeString) -> None:
 		"""
-		Initialize the Downloader object.
-
 		:parameter url: The URL of the YouTube video.
 		:parameter filename: The desired filename for the downloaded video or audio.
 		:parameter directory: The directory where the video or audio will be saved.
@@ -25,16 +23,10 @@ class Downloader:
 		self.__filename = filename
 		self.__directory = directory
 
-	# url
 	@property
 	def url(self) -> str:
 		return str(self.__url)
 
-	@url.setter
-	def url(self, value: Any) -> None:
-		self.__url = str(value)
-
-	# filename
 	@property
 	def filename(self) -> str:
 		return str(self.__filename)
@@ -43,14 +35,9 @@ class Downloader:
 	def filename(self, value: Any) -> None:
 		self.__filename = str(value)
 
-	# directory
 	@property
 	def directory(self) -> str:
 		return str(self.__directory)
-
-	@directory.setter
-	def directory(self, value: Any) -> None:
-		self.__directory = str(self.__directory)
 
 	def download_video(self) -> None:
 		"""
@@ -118,5 +105,5 @@ class Downloader:
 				self.download_video()
 			case DownloadType.AUDIO:
 				self.download_audio()
-			case other:
-				logging.error(f'Got unexpected download type: {other}!')
+			case _:
+				assert_never(download_type)

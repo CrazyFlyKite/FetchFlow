@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from flet import Page, ControlEvent, FilePickerResultEvent, MainAxisAlignment, CrossAxisAlignment, TextAlign, \
 	FontWeight, Control, icons
@@ -7,7 +7,7 @@ from flet import View, Text, TextField, ElevatedButton, IconButton, ProgressBar,
 
 from alerts import open_youtube_alert, info_alert
 from downloader import Downloader
-from utilities import MAIN, PREFERENCES, INFO, VALID_URL, DownloadType
+from utilities import MAIN, PREFERENCES, INFO, VALID_URL, DownloadType, assert_never
 
 
 class MainView:
@@ -15,7 +15,7 @@ class MainView:
 		self.page = page
 
 		self.file_picker = FilePicker()
-		self.url_field = TextField(width=300, hint_text='https://www.youtube.com/watch?v=')
+		self.url_field = TextField(width=300, hint_text=f'{VALID_URL}…')
 		self.name_field = TextField(width=350)
 		self.status_text = Text('Download', size=20, weight=FontWeight.BOLD, text_align=TextAlign.CENTER)
 		self.status_bar = ProgressBar(width=350, opacity=0)
@@ -24,17 +24,16 @@ class MainView:
 		self.url_field.value = self.page.get_clipboard()
 		self.page.update()
 
-	def get_downloader(self, event: FilePickerResultEvent) -> Downloader | None:
-		path: str = event.path
-		logging.info(f'Selected directory: {path}')
+	def get_downloader(self, event: FilePickerResultEvent) -> Optional[Downloader]:
+		logging.info(f'Selected directory: {event.path}')
 
-		if path is None:
+		if event.path is None:
 			return
 
-		return Downloader(self.page, self.url_field.value, self.name_field.value, path)
+		return Downloader(self.page, self.url_field.value, self.name_field.value, event.path)
 
-	def download(self, event: FilePickerResultEvent, download_type: DownloadType, disable_controls: List[Control]):
-		downloader: Downloader | None = self.get_downloader(event)
+	def download(self, event: FilePickerResultEvent, download_type: DownloadType, disable_controls: List[Control]) -> None:
+		downloader: Optional[Downloader] = self.get_downloader(event)
 
 		if downloader is None:
 			return
@@ -53,8 +52,8 @@ class MainView:
 				downloader.download(DownloadType.VIDEO)
 			case DownloadType.AUDIO:
 				downloader.download(DownloadType.AUDIO)
-			case other:
-				logging.error(f'Got unexpected download type: {other}!')
+			case _:
+				assert_never(download_type)
 
 		# End download
 		self.url_field.value = None
@@ -67,7 +66,7 @@ class MainView:
 
 		self.page.update()
 
-	def switch(self, download_type: DownloadType, *, disable_controls: List[Control]):
+	def switch(self, download_type: DownloadType, *, disable_controls: List[Control]) -> None:
 		if not self.url_field.value or not self.name_field.value or not self.url_field.value.startswith(VALID_URL):
 			info_alert(self.page, 'Invalid Input', 'Please enter a valid URL and filename.')
 			return
@@ -77,9 +76,8 @@ class MainView:
 				self.file_picker.on_result = lambda event: self.download(event, DownloadType.VIDEO, disable_controls)
 			case DownloadType.AUDIO:
 				self.file_picker.on_result = lambda event: self.download(event, DownloadType.AUDIO, disable_controls)
-			case other:
-				logging.error(f'Got unexpected download type: {other}!')
-				return
+			case _:
+				assert_never(download_type)
 
 		self.file_picker.get_directory_path()
 

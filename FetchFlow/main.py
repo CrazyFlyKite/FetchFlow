@@ -10,15 +10,15 @@ from utilities import *
 
 
 def main(page: Page) -> None:
-	page.title = NAME
-	page.window_width = WIDTH
-	page.window_height = HEIGHT
+	page.title = PAGE_TITLE
+	page.window_width = PAGE_WIDTH
+	page.window_height = PAGE_HEIGHT
 	page.window_resizable = RESIZABLE
 	page.horizontal_alignment = CrossAxisAlignment.CENTER
 	page.vertical_alignment = MainAxisAlignment.CENTER
 
-	# Setup colored logging
-	setup_logging(level=logging.INFO)
+	# Setup logging
+	setup_logging()
 
 	def route_change(event: RouteChangeEvent) -> None:
 		page.views.clear()
